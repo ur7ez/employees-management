@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Forms\CreateStateForm;
+use App\Forms\UpdateStateForm;
 use App\Http\Requests\UpdateStateRequest;
 use App\Models\State;
 use App\Tables\States;
 use Illuminate\Http\Request;
 use ProtoneMedia\Splade\Facades\Splade;
-use ProtoneMedia\Splade\FormBuilder\Input;
-use ProtoneMedia\Splade\FormBuilder\Submit;
-use ProtoneMedia\Splade\SpladeForm;
 
 class StateController extends Controller
 {
@@ -49,25 +47,19 @@ class StateController extends Controller
      */
     public function edit(State $state)
     {
-        $form = SpladeForm::make()
-            ->action(route('admin.states.update', $state))
-            ->fields([
-                Input::make('country_id')->label('Country ID'),
-                Input::make('name')->label('State Name'),
-                Submit::make()->label('Update'),
-            ])
-            ->class('p-4 bg-white rounded-md space-y-2')
-            ->method('PUT')
-            ->fill($state);
-        return view('admin.states.edit', compact('form'));
+        return view('admin.states.edit', [
+            'form' => UpdateStateForm::make()
+                ->action(route('admin.states.update', $state))
+                ->fill($state),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateStateRequest $request, State $state)
+    public function update(Request $request, State $state, UpdateStateForm $form)
     {
-        $state->update($request->validated());
+        $state->update($form->validate($request));
         Splade::toast('State updated')->autoDismiss(3);
         return to_route('admin.states.index');
     }
