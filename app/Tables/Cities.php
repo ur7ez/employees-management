@@ -2,7 +2,7 @@
 
 namespace App\Tables;
 
-use App\Models\Country;
+use App\Models\City;
 use App\Models\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -11,7 +11,7 @@ use ProtoneMedia\Splade\SpladeTable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class States extends AbstractTable
+class Cities extends AbstractTable
 {
     /**
      * Create a new instance.
@@ -48,10 +48,10 @@ class States extends AbstractTable
                 });
             });
         });
-        return QueryBuilder::for(State::class)
+        return QueryBuilder::for(City::class)
             ->defaultSort('id')
             ->allowedSorts(['id', 'name', 'created_at',])
-            ->allowedFilters(['id', 'name', 'country_id', $globalSearch]);
+            ->allowedFilters(['id', 'name', 'state_id', $globalSearch]);
     }
 
     /**
@@ -66,13 +66,13 @@ class States extends AbstractTable
             ->withGlobalSearch(columns: ['name',])
             ->column('id', sortable: true)
             ->column('name', sortable: true)
-            ->column(key: 'country.name', label: 'Country')
+            ->column(key: 'state.name', label: 'State')
             ->column('created_at', sortable: true, hidden: true)
             ->column('action')
             ->selectFilter(
-                key: 'country_id',
-                options: Country::pluck('name', 'id')->toArray(),
-                label: 'Country',
+                key: 'state_id',
+                options: State::pluck('name', 'id')->toArray(),
+                label: 'State',
             )
             ->paginate(15);
     }
