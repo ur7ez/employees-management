@@ -6,7 +6,6 @@ use App\Http\Requests\CreateCityRequest;
 use App\Models\City;
 use App\Models\State;
 use App\Tables\Cities;
-use Illuminate\Http\Request;
 use ProtoneMedia\Splade\Facades\Splade;
 use ProtoneMedia\Splade\FormBuilder\Input;
 use ProtoneMedia\Splade\FormBuilder\Select;
