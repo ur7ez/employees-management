@@ -9,11 +9,12 @@ use ProtoneMedia\Splade\Facades\Splade;
 use ProtoneMedia\Splade\FormBuilder\Input;
 use ProtoneMedia\Splade\FormBuilder\Submit;
 use ProtoneMedia\Splade\SpladeForm;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    public function index ()
+    public function index()
     {
         return view('admin.roles.index', [
             'roles' => Roles::class,
@@ -22,16 +23,8 @@ class RoleController extends Controller
 
     public function create()
     {
-        $form = SpladeForm::make()
-            ->action(route('admin.roles.store'))
-            ->class('p-4 bg-white rounded-md space-y-2')
-            ->fields([
-                Input::make('name')->label('Name'),
-                Submit::make()->label('Save'),
-            ]);
-
         return view('admin.roles.create', [
-            'form' => $form,
+            'permissions' => Permission::pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -41,6 +34,7 @@ class RoleController extends Controller
     public function store(CreateRoleRequest $request)
     {
         $role = Role::create($request->validated());
+        $role->syncPermissions($request->permissions);
         Splade::toast('Role created')->autoDismiss(3);
 
         return to_route('admin.roles.index');
@@ -51,18 +45,9 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        $form = SpladeForm::make()
-            ->action(route('admin.roles.update', $role))
-            ->method('PUT')
-            ->class('p-4 bg-white rounded-md space-y-2')
-            ->fields([
-                Input::make('name')->label('Name'),
-                Submit::make()->label('Update'),
-            ])
-            ->fill($role);
-
         return view('admin.roles.edit', [
-            'form' => $form,
+            'role' => $role,
+            'permissions' => Permission::pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -72,6 +57,7 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, Role $role)
     {
         $role->update($request->validated());
+        $role->syncPermissions($request->permissions);
         Splade::toast('Role updated')->autoDismiss(3);
         return to_route('admin.roles.index');
     }
