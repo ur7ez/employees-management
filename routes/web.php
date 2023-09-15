@@ -47,7 +47,7 @@ Route::middleware('splade')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
-    Route::middleware('auth')
+    Route::middleware(['auth', 'role:admin'])
         ->prefix('/admin')
         ->name('admin.')
         ->group(function () {
