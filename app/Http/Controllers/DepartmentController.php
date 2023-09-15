@@ -62,7 +62,7 @@ class DepartmentController extends Controller
             ->class('p-4 bg-white rounded-md space-y-2')
             ->fields([
                 Input::make('name')->label('Name'),
-                Submit::make()->label('Save'),
+                Submit::make()->label('Update'),
             ])
             ->fill($department);
 

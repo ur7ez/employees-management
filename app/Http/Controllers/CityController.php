@@ -69,7 +69,7 @@ class CityController extends Controller
                 Select::make('state_id')
                     ->label('Choose a State')
                     ->options(State::pluck('name', 'id')->toArray()),
-                Submit::make()->label('Save'),
+                Submit::make()->label('Update'),
             ])
             ->fill($city);
 
