@@ -10,6 +10,8 @@
         <x-splade-input name="first_name" label="First name"/>
         <x-splade-input name="last_name" label="Last name"/>
         <x-splade-input name="email" label="Email address"/>
-        <x-splade-submit/>
+        <x-splade-select name="roles[]" :options="$roles" multiple relation choices label="Roles"/>
+        <x-splade-select name="permissions[]" :options="$permissions" multiple relation choices label="Permissions"/>
+        <x-splade-submit label="Update"/>
     </x-splade-form>
 </x-admin-layout>

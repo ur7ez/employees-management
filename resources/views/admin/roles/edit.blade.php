@@ -8,6 +8,6 @@
     >
         <x-splade-input name="name" label="Name"/>
         <x-splade-select name="permissions[]" :options="$permissions" multiple relation choices label="Permissions"/>
-        <x-splade-submit/>
+        <x-splade-submit label="Update"/>
     </x-splade-form>
 </x-admin-layout>

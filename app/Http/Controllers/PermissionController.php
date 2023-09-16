@@ -6,10 +6,8 @@ use App\Http\Requests\CreatePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Tables\Permissions;
 use ProtoneMedia\Splade\Facades\Splade;
-use ProtoneMedia\Splade\FormBuilder\Input;
-use ProtoneMedia\Splade\FormBuilder\Submit;
-use ProtoneMedia\Splade\SpladeForm;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionController extends Controller
 {
@@ -22,16 +20,8 @@ class PermissionController extends Controller
 
     public function create()
     {
-        $form = SpladeForm::make()
-            ->action(route('admin.permissions.store'))
-            ->class('p-4 bg-white rounded-md space-y-2')
-            ->fields([
-                Input::make('name')->label('Name'),
-                Submit::make()->label('Save'),
-            ]);
-
         return view('admin.permissions.create', [
-            'form' => $form,
+            'roles' => Role::pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -41,6 +31,7 @@ class PermissionController extends Controller
     public function store(CreatePermissionRequest $request)
     {
         $permission = Permission::create($request->validated());
+        $permission->syncRoles($request->roles);
         Splade::toast('Permission created')->autoDismiss(3);
 
         return to_route('admin.permissions.index');
@@ -51,18 +42,9 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        $form = SpladeForm::make()
-            ->action(route('admin.permissions.update', $permission))
-            ->method('PUT')
-            ->class('p-4 bg-white rounded-md space-y-2')
-            ->fields([
-                Input::make('name')->label('Name'),
-                Submit::make()->label('Update'),
-            ])
-            ->fill($permission);
-
         return view('admin.permissions.edit', [
-            'form' => $form,
+            'permission' => $permission,
+            'roles' => Role::pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -72,6 +54,7 @@ class PermissionController extends Controller
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
         $permission->update($request->validated());
+        $permission->syncRoles($request->roles);
         Splade::toast('Permission updated')->autoDismiss(3);
         return to_route('admin.permissions.index');
     }

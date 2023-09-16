@@ -25,6 +25,7 @@ class UpdatePermissionRequest extends FormRequest
     {
         return [
             'name' => ['required', Rule::unique(Permission::class)->ignore($this->permission->id)],
+            'roles' => ['nullable',],
         ];
     }
 }
